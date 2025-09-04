@@ -15,13 +15,13 @@ git clone <repository-url>
 docker compose up --build
 ```
 
-## IT WILL GENERATE BACKEND DEV SERVER AT
+## It will generate Backend Development Server at:
 
 ```bash
 http://0.0.0.0:8000/docs
 ```
 
-## IT WILL ALSO CREATE FRONTEND DEV SERVER AT
+## It will also Generate frontend Dev Server at:
 ```bash
 localhost:5173
 ```
