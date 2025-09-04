@@ -8,28 +8,38 @@ FastAPI + Postgres backend, React/TS frontend. Fully Dockerized.
 
 cd <project-folder>
 git clone <repository-url>
+```
+## build & run everything
 
-# build & run everything
+```bash
 docker compose up --build
+```
 
-IT WILL GENERATE BACKEND DEV SERVER 
+## IT WILL GENERATE BACKEND DEV SERVER AT
 
-GO TO http://0.0.0.0:8000/docs 
+```bash
+http://0.0.0.0:8000/docs
+```
 
-FastAPI auto-generates Swagger UI. You’ll see both endpoints:
+## IT WILL ALSO CREATE FRONTEND DEV SERVER AT
+```bash
+localhost:5173
+```
 
+## FastAPI auto-generates Swagger UI. You’ll see both endpoints:
+
+```bash
 POST /api/llm/chat
 
 GET /api/usage/summary
-
-You can send test requests right there.
+```
 
 # to run backend only
 docker compose up backend
 
 # run tests (inside container)
 docker compose run --rm backend pytest -q
-```
+
 ## Running frontend (dev)
 
 Option A — run in Docker (recommended if you have Node version issues):
@@ -50,7 +60,13 @@ npm run dev
 it will run on localhost:5173
 
 ```
+## Environment and Configuration 
+Core environment variables used by the backend:
+- `DATABASE_URL` — e.g. `postgresql+psycopg://postgres:postgres@db:5432/overmind`
+- `OPENAI_API_BASE` — default `https://api.openai.com/v1` (set to a mock server when testing without quota)
+- `PYTHONPATH` — set to `/app` in compose so tests can import `app` package
 
+**To test with a real OpenAI key:** paste `sk-...` into the frontend form (OpenAI key only used to call the OpenAI API). Never commit keys.
 
 If you see `crypto.getRandomValues is not a function`, upgrade Node or run inside Docker.
 # run mock OpenAI server (local)
@@ -91,4 +107,38 @@ Columns:
 - **Rate limiting & quotas per user_label** to prevent abuse.
 - **Better error & retry logic** for transient OpenAI failures (exponential backoff).
 - Add **E2E tests** for the frontend (playwright) and richer unit coverage on backend.
+
+---
+
+## Troubleshooting ( Common issues )
+- **`COPY nginx.conf` not found** — ensure `frontend/nginx.conf` exists in the repo. Create it if missing.
+- **`ModuleNotFoundError: No module named 'app'` when running pytest** — add `PYTHONPATH: /app` to the backend service in `docker-compose.yml` or run pytest with `-e PYTHONPATH=/app`:
+  ```bash
+  docker compose run --rm -e PYTHONPATH=/app backend pytest -q
+  ```
+- **Vite error `crypto.getRandomValues is not a function`** — upgrade Node to >= 18 (Node 20 recommended) or run frontend in Docker.
+- **OpenAI `insufficient_quota`** — means your account has no available quota. Use the mock server to test without spending credits, or top up billing.
+
+## Helpful Commands Summary 
+
+```bash
+# build & run everything
+docker compose up --build
+
+# run backend only
+docker compose up backend
+
+# run tests (inside container)
+docker compose run --rm backend pytest -q
+
+# run frontend dev (local)
+cd frontend
+nvm install 20 && nvm use 20
+npm install
+npm run dev
+
+# run mock OpenAI server (local)
+uvicorn mock_openai:app --port 9000 --reload
+
+```
 
