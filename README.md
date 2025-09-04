@@ -9,7 +9,7 @@ FastAPI + Postgres backend, React/TS frontend. Fully Dockerized.
 cd <project-folder>
 git clone <repository-url>
 ```
-## build & run everything
+## Build & Run everything
 
 ```bash
 docker compose up --build
@@ -34,7 +34,7 @@ POST /api/llm/chat
 GET /api/usage/summary
 ```
 
-# to run backend only
+# To run backend only
 docker compose up backend
 
 # run tests (inside container)
